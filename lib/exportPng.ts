@@ -51,7 +51,7 @@ export interface RenderPosterOptions {
 }
 
 const COLORS = {
-  bg: "#f7f4ee",
+  bg: "#fdfaf3",
   ink: "#221d16",
   inkSoft: "#726a5b",
   line: "#ddd2ba",
