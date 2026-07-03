@@ -1,0 +1,84 @@
+import Link from "next/link";
+import { LIFE_EXPECTANCY, LIFE_EXPECTANCY_SOURCE } from "@/lib/lifeExpectancy";
+
+export const metadata = {
+  title: "วิธีคำนวณและแหล่งอ้างอิง — ชีวิตเป็นสัปดาห์",
+};
+
+export default function MethodPage() {
+  return (
+    <main className="page method-page">
+      <div className="grid-header">
+        <div>
+          <p className="eyebrow">วิธีคำนวณ</p>
+          <h1>วิธีคำนวณและแหล่งอ้างอิง</h1>
+        </div>
+        <Link href="/life-in-weeks/" className="link-btn">
+          กลับไปตารางชีวิต
+        </Link>
+      </div>
+
+      <section className="method-section">
+        <h2>แรงบันดาลใจ</h2>
+        <p>
+          แนวคิด grid 1 ช่อง = 1 สัปดาห์ มาจากบทความ{" "}
+          <a href="https://waitbutwhy.com/2014/05/life-weeks.html" target="_blank" rel="noreferrer">
+            “Your Life in Weeks”
+          </a>{" "}
+          โดย Tim Urban (Wait But Why) เว็บนี้ปรับให้เข้ากับปฏิทินและบริบทไทย
+        </p>
+      </section>
+
+      <section className="method-section">
+        <h2>สัปดาห์ที่ใช้ไปแล้ว คำนวณอย่างไร</h2>
+        <p>
+          นับจำนวนวันเต็มตั้งแต่วันเกิดถึงวันนี้ (ตามปฏิทินจริง รวมปีอธิกสุรทินให้ถูกต้อง) แล้วหารด้วย 7 แบบปัดลง
+          สัปดาห์ที่กำลังดำเนินอยู่ (ยังไม่ครบ 7 วัน) นับเป็น “สัปดาห์ปัจจุบัน” — ยังไม่ถูกใช้จนครบ
+        </p>
+        <p>ตัวอย่าง: เกิดวันที่ 1 มกราคม 2543 (ค.ศ. 2000) เมื่อถึงวันที่ 3 กรกฎาคม 2569 (ค.ศ. 2026) จะผ่านมาแล้ว 1,382 สัปดาห์เต็ม และกำลังอยู่ในสัปดาห์ที่ 1,383</p>
+      </section>
+
+      <section className="method-section">
+        <h2>อายุคาดเฉลี่ยของไทย</h2>
+        <p>
+          ใช้เพื่อกะความยาวของตาราง (จำนวนแถว) เท่านั้น เป็น <strong>ค่าเฉลี่ยระดับประชากร ไม่ใช่คำทำนายอายุของบุคคลใดบุคคลหนึ่ง</strong>
+        </p>
+        <ul>
+          <li>ไม่ระบุเพศ: {LIFE_EXPECTANCY.unspecified} ปี</li>
+          <li>ชาย: {LIFE_EXPECTANCY.male} ปี</li>
+          <li>หญิง: {LIFE_EXPECTANCY.female} ปี</li>
+        </ul>
+        <p className="citation">
+          แหล่งอ้างอิง: {LIFE_EXPECTANCY_SOURCE.organization} — ตัวชี้วัด {LIFE_EXPECTANCY_SOURCE.indicator}
+          ประเทศไทย ปี {LIFE_EXPECTANCY_SOURCE.year}
+        </p>
+      </section>
+
+      <section className="method-section">
+        <h2>ช่วงวัยบนตาราง</h2>
+        <p>
+          แถบสีอ่อนบนตารางแบ่งตามช่วงวัยของระบบการศึกษาไทยโดยประมาณ — อนุบาล (3–5 ปี), ประถม (6–11 ปี), มัธยม (12–17 ปี),
+          มหาวิทยาลัย (18–21 ปี, เลือกได้ว่าจะนับหรือไม่), วัยทำงาน, และวัยเกษียณ (60 ปีขึ้นไป) เป็นการแบ่งแบบกว้างๆ
+          เพื่อช่วยมองภาพรวม ไม่ใช่กฎเกณฑ์ตายตัว
+        </p>
+      </section>
+
+      <section className="method-section">
+        <h2>จำนวนครั้งที่จะได้เจอพ่อแม่</h2>
+        <p>
+          คำนวณจาก (อายุคาดเฉลี่ยของพ่อหรือแม่ − อายุปัจจุบัน) × จำนวนครั้งที่เจอต่อปี (ค่าเริ่มต้น 2 ครั้ง/ปี) แล้วปัดลง
+          เป็นตัวเลขประมาณการเพื่อชวนคิด ไม่ใช่การพยากรณ์ที่แม่นยำ
+        </p>
+      </section>
+
+      <section className="method-section">
+        <h2>ความเป็นส่วนตัว</h2>
+        <p>
+          การคำนวณทั้งหมดทำงานอยู่ในเบราว์เซอร์ของคุณเท่านั้น วันเกิด เพศ อายุพ่อแม่ และเหตุการณ์สำคัญที่กรอก
+          จะถูกเก็บไว้ใน localStorage ของเครื่องคุณเท่านั้น ไม่ถูกส่งไปที่เซิร์ฟเวอร์ใดๆ ทั้งสิ้น (มีเพียงสถิติการเข้าชมหน้าเว็บ
+          แบบไม่ระบุตัวตนผ่าน Umami เพื่อดูภาพรวมการใช้งานเว็บ)
+        </p>
+      </section>
+    </main>
+  );
+}
