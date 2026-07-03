@@ -30,26 +30,26 @@ export default function StatsPanel({
   const visits = parentAge !== null ? remainingVisits(parentAge, parentLifeExpectancyYears, DEFAULT_VISITS_PER_YEAR) : null;
 
   return (
-    <div className="stats-panel">
-      <div className="stat-item">
-        <span className="stat-number">{formatNumber(weeksLived)}</span>
-        <span className="stat-label">สัปดาห์ที่ใช้ไปแล้ว</span>
+    <aside className="margin-notes">
+      <div className="margin-note">
+        <span className="margin-note-number">{formatNumber(weeksLived)}</span>
+        <span className="margin-note-label">สัปดาห์ที่ใช้ไปแล้ว</span>
       </div>
-      <div className="stat-item">
-        <span className="stat-number">{formatNumber(remaining)}</span>
-        <span className="stat-label">สัปดาห์ที่เหลือโดยประมาณ (จาก {formatNumber(totalWeeks)} สัปดาห์)</span>
+      <div className="margin-note">
+        <span className="margin-note-number">{formatNumber(remaining)}</span>
+        <span className="margin-note-label">สัปดาห์ที่เหลือโดยประมาณ (จาก {formatNumber(totalWeeks)} สัปดาห์)</span>
       </div>
-      <div className="stat-item">
-        <span className="stat-number">{percent.toFixed(1)}%</span>
-        <span className="stat-label">ของชีวิตที่คาดว่าจะได้ใช้</span>
+      <div className="margin-note">
+        <span className="margin-note-number margin-note-number--accent">{percent.toFixed(1)}%</span>
+        <span className="margin-note-label">ของชีวิตที่คาดว่าจะได้ใช้</span>
       </div>
       {visits !== null && (
-        <div className="stat-item">
-          <span className="stat-number">{formatNumber(visits)}</span>
-          <span className="stat-label">ครั้ง — ถ้าเจอพ่อ/แม่ปีละ {DEFAULT_VISITS_PER_YEAR} ครั้ง เหลือประมาณเท่านี้</span>
+        <div className="margin-note">
+          <span className="margin-note-number">{formatNumber(visits)}</span>
+          <span className="margin-note-label">ครั้ง — ถ้าเจอพ่อ/แม่ปีละ {DEFAULT_VISITS_PER_YEAR} ครั้ง เหลือประมาณเท่านี้</span>
         </div>
       )}
-      <p className="reflective-line">สัปดาห์นี้ยังไม่ถูกใช้</p>
-    </div>
+      <p className="margin-note-reflective">สัปดาห์นี้ยังไม่ถูกใช้</p>
+    </aside>
   );
 }

@@ -77,58 +77,62 @@ export default function Home() {
 
   return (
     <main className="page">
-      <div className="grid-header">
-        <div>
-          <p className="eyebrow">ชีวิตเป็นสัปดาห์</p>
-          <h1>ตารางชีวิตของคุณ</h1>
+      <div className="poster-layout">
+        <div className="poster-header">
+          <div>
+            <p className="eyebrow">ชีวิตเป็นสัปดาห์</p>
+            <h1>ตารางชีวิตของคุณ</h1>
+          </div>
+          <button type="button" className="text-btn no-print" onClick={() => setShowInput(true)}>
+            แก้ไขข้อมูล
+          </button>
         </div>
-        <button type="button" className="text-btn no-print" onClick={() => setShowInput(true)}>
-          แก้ไขข้อมูล
-        </button>
+
+        <StatsPanel
+          birthDate={birthDate}
+          today={today}
+          lifeExpectancyYears={lifeExpectancyYears}
+          parentAge={settings.parentAge}
+          parentLifeExpectancyYears={parentLifeExpectancyYears}
+        />
+
+        <div className="poster-main">
+          <WeekGrid
+            birthDate={birthDate}
+            today={today}
+            lifeExpectancyYears={lifeExpectancyYears}
+            includeUniversity={settings.includeUniversity}
+            milestones={milestones}
+          />
+
+          <ExportButtons
+            birthDate={birthDate}
+            today={today}
+            lifeExpectancyYears={lifeExpectancyYears}
+            includeUniversity={settings.includeUniversity}
+            milestones={milestones}
+            posterName={settings.posterName}
+            onPosterNameChange={(posterName) => patchSettings({ posterName })}
+          />
+
+          <MilestoneManager
+            milestones={milestones}
+            onAdd={handleAddMilestone}
+            onRemove={handleRemoveMilestone}
+            onUpdate={handleUpdateMilestone}
+          />
+
+          <p className="privacy-note">
+            ข้อมูลทั้งหมดคำนวณและเก็บอยู่ในเครื่องของคุณเท่านั้น ไม่มีการส่งวันเกิดหรือข้อมูลส่วนตัวออกไปที่ไหน
+          </p>
+
+          <footer className="site-footer no-print">
+            <Link href="/life-in-weeks/method/" className="link-btn">
+              เกี่ยวกับวิธีคำนวณและแหล่งอ้างอิง
+            </Link>
+          </footer>
+        </div>
       </div>
-
-      <StatsPanel
-        birthDate={birthDate}
-        today={today}
-        lifeExpectancyYears={lifeExpectancyYears}
-        parentAge={settings.parentAge}
-        parentLifeExpectancyYears={parentLifeExpectancyYears}
-      />
-
-      <WeekGrid
-        birthDate={birthDate}
-        today={today}
-        lifeExpectancyYears={lifeExpectancyYears}
-        includeUniversity={settings.includeUniversity}
-        milestones={milestones}
-      />
-
-      <ExportButtons
-        birthDate={birthDate}
-        today={today}
-        lifeExpectancyYears={lifeExpectancyYears}
-        includeUniversity={settings.includeUniversity}
-        milestones={milestones}
-        posterName={settings.posterName}
-        onPosterNameChange={(posterName) => patchSettings({ posterName })}
-      />
-
-      <MilestoneManager
-        milestones={milestones}
-        onAdd={handleAddMilestone}
-        onRemove={handleRemoveMilestone}
-        onUpdate={handleUpdateMilestone}
-      />
-
-      <p className="privacy-note">
-        ข้อมูลทั้งหมดคำนวณและเก็บอยู่ในเครื่องของคุณเท่านั้น ไม่มีการส่งวันเกิดหรือข้อมูลส่วนตัวออกไปที่ไหน
-      </p>
-
-      <footer className="site-footer no-print">
-        <Link href="/life-in-weeks/method/" className="link-btn">
-          เกี่ยวกับวิธีคำนวณและแหล่งอ้างอิง
-        </Link>
-      </footer>
     </main>
   );
 }

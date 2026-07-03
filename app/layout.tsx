@@ -1,11 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Anuphan } from "next/font/google";
+import { Trirong, IBM_Plex_Sans_Thai } from "next/font/google";
 import "./globals.css";
 
-const anuphan = Anuphan({
-  variable: "--font-anuphan",
+// Display serif for the poster masthead — carries the "printed matter" character.
+const trirong = Trirong({
+  variable: "--font-trirong",
   subsets: ["thai", "latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "600", "700", "800"],
+  style: ["normal", "italic"],
+});
+
+// Grotesk for numerals, UI and body copy — precise, tabular, quiet next to the serif.
+const plexSansThai = IBM_Plex_Sans_Thai({
+  variable: "--font-plex",
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -15,12 +24,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf6ef",
+  themeColor: "#f7f4ee",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="th" className={anuphan.variable}>
+    <html lang="th" className={`${trirong.variable} ${plexSansThai.variable}`}>
       <head>
         <script
           defer

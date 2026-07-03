@@ -1,13 +1,15 @@
 :root {
-  --color-bg: #faf6ef;
-  --color-ink: #201c17;
-  --color-ink-soft: #6f6659;
-  --color-line: #e4dccb;
-  --color-accent: #c1502e;
-  --color-accent-soft: #eecfbe;
-  --color-cell-future: #ece4d6;
-  --color-cell-band: rgba(193, 80, 46, 0.07);
-  --font-body: var(--font-anuphan), system-ui, sans-serif;
+  --color-bg: #f7f4ee;
+  --color-ink: #221d16;
+  --color-ink-soft: #726a5b;
+  --color-line: #ddd2ba;
+  --color-line-strong: #c9bb9d;
+  --color-accent: #b8391b;
+  --color-accent-soft: #f1dbc9;
+  --color-cell-future: #eae2d1;
+  --color-cell-band: rgba(184, 57, 27, 0.07);
+  --font-display: var(--font-trirong), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-plex), system-ui, sans-serif;
 }
 
 * {
@@ -21,6 +23,7 @@ body {
 }
 
 body {
+  position: relative;
   background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -29,10 +32,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Faint paper grain — a fixed noise layer, purely decorative. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 170px 170px;
+}
+
 h1,
 h2,
 h3 {
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 700;
   letter-spacing: -0.01em;
   margin: 0;
 }
@@ -53,33 +70,60 @@ a {
 /* ---------- layout ---------- */
 
 .page {
-  max-width: 920px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 72px 24px 96px;
+  padding: 72px 32px 96px;
 }
 
 .eyebrow {
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 13px;
+  letter-spacing: 0.16em;
+  font-size: 12px;
   color: var(--color-accent);
   font-weight: 600;
-  margin: 0 0 12px;
+  margin: 0 0 14px;
 }
 
 .intro-text {
   color: var(--color-ink-soft);
-  max-width: 56ch;
+  max-width: 52ch;
   font-size: 17px;
 }
 
-.grid-header {
+/* Asymmetric two-column poster layout: a narrow left margin for running
+   notes (the stats), the grid held right of it like a shifted page block. */
+.poster-layout {
+  display: grid;
+  grid-template-columns: minmax(130px, 200px) 1fr;
+  column-gap: 44px;
+  align-items: start;
+}
+
+.poster-header {
+  grid-column: 1 / -1;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 40px;
+  margin-bottom: 48px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--color-line);
   flex-wrap: wrap;
+}
+
+.poster-header h1 {
+  font-size: clamp(34px, 4.4vw, 54px);
+  letter-spacing: -0.015em;
+}
+
+.poster-main {
+  min-width: 0;
+}
+
+@media (max-width: 860px) {
+  .poster-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 .site-footer {
@@ -93,7 +137,7 @@ a {
 button,
 .link-btn {
   border: none;
-  border-radius: 10px;
+  border-radius: 7px;
   font-size: 15px;
   display: inline-flex;
   align-items: center;
@@ -103,11 +147,11 @@ button,
 
 .primary-btn {
   background: var(--color-accent);
-  color: #fff8f2;
+  color: #fdf6ef;
   padding: 16px 32px;
   font-size: 16px;
   font-weight: 600;
-  border-radius: 12px;
+  border-radius: 8px;
   margin-top: 8px;
 }
 
@@ -150,6 +194,7 @@ button,
   border: 1px solid var(--color-line);
   padding: 9px 16px;
   font-weight: 500;
+  border-radius: 7px;
 }
 
 .toggle-btn-active {
@@ -170,7 +215,7 @@ select {
   font-family: inherit;
   font-size: 15px;
   padding: 11px 14px;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid var(--color-line);
   background: #fff;
   color: var(--color-ink);
@@ -215,6 +260,12 @@ select {
 
 /* ---------- input screen ---------- */
 
+.input-screen h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  margin-top: 4px;
+  max-width: 16ch;
+}
+
 .input-form {
   display: flex;
   flex-direction: column;
@@ -249,42 +300,84 @@ select {
   margin-top: 24px;
 }
 
-/* ---------- stats panel ---------- */
+/* ---------- margin notes (stats, hanging in the left gutter) ---------- */
 
-.stats-panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 24px;
-  padding: 28px 0 40px;
-  border-bottom: 1px solid var(--color-line);
-  margin-bottom: 40px;
-}
-
-.stat-item {
+.margin-notes {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 26px;
+  position: sticky;
+  top: 40px;
 }
 
-.stat-number {
-  font-size: 34px;
+.margin-note {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-top: 1px solid var(--color-line);
+  padding-top: 10px;
+}
+
+.margin-note-number {
+  font-family: var(--font-body);
   font-weight: 700;
-  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
+  font-size: clamp(28px, 3.2vw, 52px);
+  line-height: 1.02;
+  color: var(--color-ink);
+  white-space: nowrap;
 }
 
-.stat-label {
-  font-size: 13px;
+.margin-note-number--accent {
+  color: var(--color-accent);
+}
+
+.margin-note-label {
+  font-size: 11px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
   color: var(--color-ink-soft);
 }
 
-.reflective-line {
-  grid-column: 1 / -1;
-  font-size: 18px;
-  font-style: normal;
+.margin-note-reflective {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
   color: var(--color-ink);
-  margin: 8px 0 0;
-  font-weight: 500;
+  border-top: 1px solid var(--color-line);
+  padding-top: 12px;
+}
+
+@media (max-width: 860px) {
+  .margin-notes {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 32px;
+    row-gap: 18px;
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .margin-note {
+    flex: 1 1 130px;
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .margin-note-number {
+    font-size: clamp(24px, 8vw, 34px);
+  }
+
+  .margin-note-reflective {
+    flex-basis: 100%;
+    border-top: 1px solid var(--color-line);
+    padding-top: 14px;
+  }
 }
 
 /* ---------- week grid ---------- */
@@ -300,12 +393,21 @@ select {
 }
 
 .band-label {
-  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   color: var(--color-ink-soft);
-  margin-top: 14px;
-  margin-bottom: 2px;
+  margin: 16px 4px 4px;
+}
+
+.band-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-line);
 }
 
 .week-grid-row {
@@ -317,7 +419,7 @@ select {
 
 .week-grid-row[data-band]:not([data-band="none"]) {
   background: var(--color-cell-band);
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .week-cell {
@@ -333,7 +435,7 @@ select {
 }
 
 .week-cell-past {
-  background: var(--color-accent);
+  background: var(--color-ink);
 }
 
 .week-cell-future {
@@ -341,13 +443,28 @@ select {
 }
 
 .week-cell-current {
-  background: var(--color-ink);
+  background: var(--color-accent);
   animation: pulse 1.8s ease-in-out infinite;
 }
 
 .week-cell-milestone {
-  outline: 1.5px solid var(--color-ink);
+  outline: 1.5px solid var(--color-accent);
   outline-offset: -1.5px;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 56px 20px 72px;
+  }
+
+  .week-grid-row {
+    gap: 1.5px;
+    padding: 1px 2px;
+  }
+
+  .week-cell {
+    min-width: 3px;
+  }
 }
 
 @keyframes pulse {
@@ -409,7 +526,7 @@ select {
   flex-wrap: wrap;
   padding: 10px 14px;
   border: 1px solid var(--color-line);
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .milestone-list-text {
@@ -442,6 +559,10 @@ select {
   margin-bottom: 36px;
 }
 
+.method-section h2 {
+  font-size: 22px;
+}
+
 .method-section p,
 .method-section li {
   color: var(--color-ink-soft);
@@ -462,9 +583,21 @@ select {
     background: #fff;
   }
 
+  body::before {
+    display: none;
+  }
+
   .page {
     max-width: none;
     padding: 12px;
+  }
+
+  .poster-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .margin-notes {
+    position: static;
   }
 
   .week-cell-current {
