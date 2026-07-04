@@ -114,4 +114,27 @@ describe("loadSettings / saveSettings", () => {
     localStorage.setItem("life-in-weeks:settings", JSON.stringify({ birthDate: "2000-01-01" }));
     expect(loadSettings()).toEqual({ ...DEFAULT_SETTINGS, birthDate: "2000-01-01" });
   });
+
+  it("migrates an old save (missing country/year/overrides/visitsPerYear) to sensible defaults", () => {
+    // Simulates a save written before this feature existed: only the
+    // original fields are present.
+    const oldSave = {
+      birthDate: "1990-05-15",
+      sex: "female",
+      includeUniversity: true,
+      parentAge: 60,
+      parentSex: "male",
+      posterName: "แม่",
+    };
+    localStorage.setItem("life-in-weeks:settings", JSON.stringify(oldSave));
+    const loaded = loadSettings();
+    expect(loaded.country).toBe(DEFAULT_SETTINGS.country);
+    expect(loaded.year).toBe(DEFAULT_SETTINGS.year);
+    expect(loaded.lifeExpectancyOverride).toBeNull();
+    expect(loaded.parentLifeExpectancyOverride).toBeNull();
+    expect(loaded.visitsPerYear).toBe(DEFAULT_SETTINGS.visitsPerYear);
+    // Old fields are preserved.
+    expect(loaded.birthDate).toBe("1990-05-15");
+    expect(loaded.parentAge).toBe(60);
+  });
 });

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LIFE_EXPECTANCY, LIFE_EXPECTANCY_SOURCE } from "@/lib/lifeExpectancy";
+import MethodLifeExpectancy from "@/components/MethodLifeExpectancy";
 
 export const metadata = {
   title: "วิธีคำนวณและแหล่งอ้างอิง — ชีวิตเป็นสัปดาห์",
@@ -40,19 +40,12 @@ export default function MethodPage() {
         </section>
 
         <section className="method-section">
-          <h2>อายุคาดเฉลี่ยของไทย</h2>
+          <h2>อายุคาดเฉลี่ย</h2>
           <p>
             ใช้เพื่อกะความยาวของตาราง (จำนวนแถว) เท่านั้น เป็น <strong>ค่าเฉลี่ยระดับประชากร ไม่ใช่คำทำนายอายุของบุคคลใดบุคคลหนึ่ง</strong>
+            เลือกประเทศและปีข้อมูลได้จากหน้ากรอกข้อมูล หรือใส่ตัวเลขของคุณเองแทนค่าเฉลี่ยก็ได้
           </p>
-          <ul>
-            <li>ไม่ระบุเพศ: {LIFE_EXPECTANCY.unspecified} ปี</li>
-            <li>ชาย: {LIFE_EXPECTANCY.male} ปี</li>
-            <li>หญิง: {LIFE_EXPECTANCY.female} ปี</li>
-          </ul>
-          <p className="citation">
-            แหล่งอ้างอิง: {LIFE_EXPECTANCY_SOURCE.organization} — ตัวชี้วัด {LIFE_EXPECTANCY_SOURCE.indicator}
-            ประเทศไทย ปี {LIFE_EXPECTANCY_SOURCE.year}
-          </p>
+          <MethodLifeExpectancy />
         </section>
 
         <section className="method-section">

@@ -1,24 +1,58 @@
-// อายุคาดเฉลี่ยเมื่อแรกเกิดของไทย — ใช้เป็นค่าเริ่มต้นความยาว "ชีวิต" บน grid
+// อายุคาดเฉลี่ยเมื่อแรกเกิด — ใช้เป็นค่าเริ่มต้นความยาว "ชีวิต" บน grid
 // แหล่งอ้างอิง: WHO Global Health Observatory, ตัวชี้วัด WHOSIS_000001
-// "Life expectancy at birth (years)" ประเทศไทย ปี 2020
-// ชาย 73.24 ปี / หญิง 79.91 ปี / รวม 76.51 ปี
+// "Life expectancy at birth (years)" — ข้อมูลหลายประเทศ หลายปี (ดู lib/lifeExpectancyData.ts)
 // เป็น "ค่าเฉลี่ยระดับประชากร" ไม่ใช่คำทำนายอายุของบุคคลใดบุคคลหนึ่ง
+
+import { LIFE_EXPECTANCY_DATA, DEFAULT_COUNTRY, availableYears, listCountries } from "./lifeExpectancyData";
 
 export type Sex = "male" | "female" | "unspecified";
 
-export const LIFE_EXPECTANCY: Record<Sex, number> = {
-  male: 73.24,
-  female: 79.91,
-  unspecified: 76.51,
-};
+export { DEFAULT_COUNTRY, availableYears, listCountries };
 
 export const LIFE_EXPECTANCY_SOURCE = {
   organization: "WHO Global Health Observatory",
   indicator: "WHOSIS_000001 — Life expectancy at birth (years)",
-  country: "Thailand",
-  year: 2020,
 } as const;
 
-export function lifeExpectancyFor(sex: Sex): number {
-  return LIFE_EXPECTANCY[sex];
+function resolveCountry(country: string): string {
+  return LIFE_EXPECTANCY_DATA[country] ? country : DEFAULT_COUNTRY;
+}
+
+/** Latest year with baked data for a country. Falls back to Thailand's latest year. */
+export function latestYearFor(country: string): number {
+  const years = availableYears(resolveCountry(country));
+  return years[0];
+}
+
+/** The full male/female/unspecified row for a country + year, falling back to that
+ * country's latest year when the requested year isn't available. */
+export function lifeExpectancyRow(country: string, year: number): { male: number; female: number; unspecified: number } {
+  const resolved = resolveCountry(country);
+  const data = LIFE_EXPECTANCY_DATA[resolved];
+  return data.years[year] ?? data.years[latestYearFor(resolved)];
+}
+
+/** WHO life expectancy at birth for a country + year + sex. Falls back to that
+ * country's latest year if the year is missing, and to Thailand if the country
+ * is unknown. */
+export function lifeExpectancyFor(country: string, year: number, sex: Sex): number {
+  return lifeExpectancyRow(country, year)[sex];
+}
+
+/** User override wins when set; otherwise the WHO default for (country, year, sex). */
+export function resolveLifeExpectancyYears(
+  override: number | null,
+  country: string,
+  year: number,
+  sex: Sex
+): number {
+  return override ?? lifeExpectancyFor(country, year, sex);
+}
+
+/** Country name (Thai) + year for the dynamic WHO source citation. */
+export function sourceCitation(country: string, year: number): { countryNameTh: string; year: number } {
+  const resolved = resolveCountry(country);
+  const data = LIFE_EXPECTANCY_DATA[resolved];
+  const resolvedYear = data.years[year] ? year : latestYearFor(resolved);
+  return { countryNameTh: data.nameTh, year: resolvedYear };
 }

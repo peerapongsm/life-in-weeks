@@ -3,7 +3,8 @@
 import DateField from "./DateField";
 import ToggleGroup from "./ToggleGroup";
 import type { AppSettings } from "@/lib/settings";
-import type { Sex } from "@/lib/lifeExpectancy";
+import { listCountries, availableYears, latestYearFor, lifeExpectancyFor, type Sex } from "@/lib/lifeExpectancy";
+import { DEFAULT_VISITS_PER_YEAR } from "@/lib/parentMath";
 
 const SEX_OPTIONS: { value: Sex; label: string }[] = [
   { value: "unspecified", label: "ไม่ระบุ" },
@@ -26,6 +27,11 @@ export default function InputScreen({ settings, onChange, onSubmit }: InputScree
   const isFuture = !!settings.birthDate && isFutureDate(settings.birthDate);
   const canSubmit = !!settings.birthDate && !isFuture;
 
+  const countries = listCountries();
+  const years = availableYears(settings.country);
+  const whoDefaultSelf = lifeExpectancyFor(settings.country, settings.year, settings.sex);
+  const whoDefaultParent = lifeExpectancyFor(settings.country, settings.year, settings.parentSex);
+
   return (
     <div className="input-screen">
       <p className="eyebrow">ชีวิตเป็นสัปดาห์</p>
@@ -43,11 +49,62 @@ export default function InputScreen({ settings, onChange, onSubmit }: InputScree
         />
 
         <ToggleGroup
-          label="เพศ (ใช้ประมาณอายุคาดเฉลี่ยไทย — ไม่ระบุก็ได้)"
+          label="เพศ (ใช้ประมาณอายุคาดเฉลี่ย — ไม่ระบุก็ได้)"
           options={SEX_OPTIONS}
           value={settings.sex}
           onChange={(sex) => onChange({ sex })}
         />
+
+        <div className="date-field">
+          <span className="date-field-label">ประเทศและปีข้อมูลอายุคาดเฉลี่ย (WHO)</span>
+          <div className="date-field-selects">
+            <select
+              aria-label="ประเทศ"
+              value={settings.country}
+              onChange={(e) => {
+                const country = e.target.value;
+                onChange({ country, year: latestYearFor(country) });
+              }}
+            >
+              {countries.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.nameTh}
+                </option>
+              ))}
+            </select>
+            <select
+              aria-label="ปีข้อมูล"
+              value={settings.year}
+              onChange={(e) => onChange({ year: Number(e.target.value) })}
+            >
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="parent-input">
+          <span className="date-field-label">
+            อายุคาดเฉลี่ยของคุณ (ปี) — ไม่ใส่ก็ได้ ถ้าไม่ใส่จะใช้ค่าเฉลี่ย WHO แทน
+          </span>
+          <input
+            type="number"
+            min={1}
+            max={120}
+            step="0.01"
+            inputMode="decimal"
+            placeholder={`ค่าเฉลี่ย WHO: ${whoDefaultSelf} ปี`}
+            value={settings.lifeExpectancyOverride ?? ""}
+            onChange={(e) =>
+              onChange({ lifeExpectancyOverride: e.target.value === "" ? null : Number(e.target.value) })
+            }
+            className="number-input"
+            aria-label="อายุคาดเฉลี่ยของคุณ (ปี)"
+          />
+        </div>
 
         <ToggleGroup
           label="เรียนมหาวิทยาลัย?"
@@ -84,6 +141,40 @@ export default function InputScreen({ settings, onChange, onSubmit }: InputScree
               onChange={(parentSex) => onChange({ parentSex })}
             />
           </div>
+
+          <span className="date-field-label">
+            อายุคาดเฉลี่ยของพ่อหรือแม่ (ปี) — ไม่ใส่ก็ได้ ถ้าไม่ใส่จะใช้ค่าเฉลี่ย WHO แทน
+          </span>
+          <input
+            type="number"
+            min={1}
+            max={120}
+            step="0.01"
+            inputMode="decimal"
+            placeholder={`ค่าเฉลี่ย WHO: ${whoDefaultParent} ปี`}
+            value={settings.parentLifeExpectancyOverride ?? ""}
+            onChange={(e) =>
+              onChange({ parentLifeExpectancyOverride: e.target.value === "" ? null : Number(e.target.value) })
+            }
+            className="number-input"
+            aria-label="อายุคาดเฉลี่ยของพ่อหรือแม่ (ปี)"
+          />
+
+          <span className="date-field-label">ปีละกี่ครั้งที่ได้เจอ</span>
+          <input
+            type="number"
+            min={0}
+            max={365}
+            inputMode="numeric"
+            value={settings.visitsPerYear}
+            onChange={(e) =>
+              onChange({
+                visitsPerYear: e.target.value === "" ? DEFAULT_VISITS_PER_YEAR : Number(e.target.value),
+              })
+            }
+            className="number-input"
+            aria-label="ปีละกี่ครั้งที่ได้เจอ"
+          />
         </div>
       </div>
 

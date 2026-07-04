@@ -9,6 +9,7 @@ interface StatsPanelProps {
   lifeExpectancyYears: number;
   parentAge: number | null;
   parentLifeExpectancyYears: number;
+  visitsPerYear?: number;
 }
 
 function formatNumber(n: number): string {
@@ -21,13 +22,14 @@ export default function StatsPanel({
   lifeExpectancyYears,
   parentAge,
   parentLifeExpectancyYears,
+  visitsPerYear = DEFAULT_VISITS_PER_YEAR,
 }: StatsPanelProps) {
   const { weeksLived } = getWeeksInfo(birthDate, today);
   const totalWeeks = totalWeeksForLifeExpectancy(lifeExpectancyYears);
   const remaining = weeksRemaining(birthDate, today, lifeExpectancyYears);
   const percent = percentLifeUsed(birthDate, today, lifeExpectancyYears);
 
-  const visits = parentAge !== null ? remainingVisits(parentAge, parentLifeExpectancyYears, DEFAULT_VISITS_PER_YEAR) : null;
+  const visits = parentAge !== null ? remainingVisits(parentAge, parentLifeExpectancyYears, visitsPerYear) : null;
 
   return (
     <aside className="margin-notes">
@@ -46,7 +48,7 @@ export default function StatsPanel({
       {visits !== null && (
         <div className="margin-note">
           <span className="margin-note-number">{formatNumber(visits)}</span>
-          <span className="margin-note-label">ครั้ง — ถ้าเจอพ่อ/แม่ปีละ {DEFAULT_VISITS_PER_YEAR} ครั้ง เหลือประมาณเท่านี้</span>
+          <span className="margin-note-label">ครั้ง — ถ้าเจอพ่อ/แม่ปีละ {visitsPerYear} ครั้ง เหลือประมาณเท่านี้</span>
         </div>
       )}
       <p className="margin-note-reflective">สัปดาห์นี้ยังไม่ถูกใช้</p>

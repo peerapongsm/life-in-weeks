@@ -9,7 +9,7 @@ import MilestoneManager from "@/components/MilestoneManager";
 import ExportButtons from "@/components/ExportButtons";
 import { DEFAULT_SETTINGS, type AppSettings } from "@/lib/settings";
 import { loadSettings, saveSettings, loadMilestones, addMilestone, removeMilestone, updateMilestone, saveMilestones } from "@/lib/storage";
-import { lifeExpectancyFor } from "@/lib/lifeExpectancy";
+import { resolveLifeExpectancyYears } from "@/lib/lifeExpectancy";
 import type { Milestone } from "@/lib/milestones";
 
 export default function Home() {
@@ -74,8 +74,18 @@ export default function Home() {
 
   const birthDate = new Date(settings.birthDate + "T00:00:00Z");
   const today = new Date();
-  const lifeExpectancyYears = lifeExpectancyFor(settings.sex);
-  const parentLifeExpectancyYears = lifeExpectancyFor(settings.parentSex);
+  const lifeExpectancyYears = resolveLifeExpectancyYears(
+    settings.lifeExpectancyOverride,
+    settings.country,
+    settings.year,
+    settings.sex
+  );
+  const parentLifeExpectancyYears = resolveLifeExpectancyYears(
+    settings.parentLifeExpectancyOverride,
+    settings.country,
+    settings.year,
+    settings.parentSex
+  );
 
   return (
     <main className="page">
@@ -97,6 +107,7 @@ export default function Home() {
             lifeExpectancyYears={lifeExpectancyYears}
             parentAge={settings.parentAge}
             parentLifeExpectancyYears={parentLifeExpectancyYears}
+            visitsPerYear={settings.visitsPerYear}
           />
 
           <div className="poster-main">
