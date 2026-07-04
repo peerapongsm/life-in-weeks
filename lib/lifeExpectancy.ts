@@ -3,11 +3,11 @@
 // "Life expectancy at birth (years)" — ข้อมูลหลายประเทศ หลายปี (ดู lib/lifeExpectancyData.ts)
 // เป็น "ค่าเฉลี่ยระดับประชากร" ไม่ใช่คำทำนายอายุของบุคคลใดบุคคลหนึ่ง
 
-import { LIFE_EXPECTANCY_DATA, DEFAULT_COUNTRY, availableYears, listCountries } from "./lifeExpectancyData";
+import { LIFE_EXPECTANCY_DATA, DEFAULT_COUNTRY, availableYears as rawAvailableYears, listCountries } from "./lifeExpectancyData";
 
 export type Sex = "male" | "female" | "unspecified";
 
-export { DEFAULT_COUNTRY, availableYears, listCountries };
+export { DEFAULT_COUNTRY, listCountries };
 
 export const LIFE_EXPECTANCY_SOURCE = {
   organization: "WHO Global Health Observatory",
@@ -16,6 +16,12 @@ export const LIFE_EXPECTANCY_SOURCE = {
 
 function resolveCountry(country: string): string {
   return LIFE_EXPECTANCY_DATA[country] ? country : DEFAULT_COUNTRY;
+}
+
+/** Years with baked WHO data for a country, newest first. Falls back to
+ * Thailand's years when the country is unknown. */
+export function availableYears(country: string): number[] {
+  return rawAvailableYears(resolveCountry(country));
 }
 
 /** Latest year with baked data for a country. Falls back to Thailand's latest year. */

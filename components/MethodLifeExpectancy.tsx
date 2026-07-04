@@ -26,7 +26,7 @@ export default function MethodLifeExpectancy() {
         <li>หญิง: {row.female} ปี</li>
       </ul>
       <p className="citation">
-        แหล่งอ้างอิง: {LIFE_EXPECTANCY_SOURCE.organization} — ตัวชี้วัด {LIFE_EXPECTANCY_SOURCE.indicator}
+        แหล่งอ้างอิง: {LIFE_EXPECTANCY_SOURCE.organization} — ตัวชี้วัด {LIFE_EXPECTANCY_SOURCE.indicator}{" "}
         ประเทศ{citation.countryNameTh} ปี {citation.year}
       </p>
     </>

@@ -64,6 +64,13 @@ describe("resolveLifeExpectancyYears", () => {
   });
 });
 
+describe("availableYears", () => {
+  it("falls back to Thailand's years for an unknown country", () => {
+    expect(availableYears("ZZZ")).toEqual(availableYears(DEFAULT_COUNTRY));
+    expect(availableYears("ZZZ").length).toBeGreaterThan(0);
+  });
+});
+
 describe("listCountries", () => {
   it("includes Thailand first and covers the curated country list", () => {
     const countries = listCountries();
